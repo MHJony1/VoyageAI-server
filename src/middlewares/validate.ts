@@ -21,13 +21,13 @@ export const validate =
       }
 
       if (options.query) {
-        const validated = options.query.parse(req.query);
-        req.query = validated as any;
+        options.query.parse(req.query);
+        // Validation passed but don't modify read-only req.query
       }
 
       if (options.params) {
-        const validated = options.params.parse(req.params);
-        req.params = validated as any;
+        options.params.parse(req.params);
+        // Validation passed but don't modify read-only req.params
       }
 
       next();

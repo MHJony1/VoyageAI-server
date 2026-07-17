@@ -1,0 +1,21 @@
+import { Router } from 'express';
+import { destinationController } from './destination.controller';
+import { validate } from '../../middlewares/validate';
+import { authenticate } from '../../middlewares/authenticate';
+import { createDestinationSchema, listDestinationsSchema, destinationIdSchema } from './destination.validation';
+
+/**
+ * Destination Routes
+ */
+const router = Router();
+
+// Public routes
+router.get('/', validate({ query: listDestinationsSchema }), destinationController.getAll);
+router.get('/featured', destinationController.getFeatured);
+router.get('/:id', validate({ params: destinationIdSchema }), destinationController.getById);
+
+// Protected routes
+router.post('/', authenticate, validate({ body: createDestinationSchema }), destinationController.create);
+router.delete('/:id', authenticate, validate({ params: destinationIdSchema }), destinationController.delete);
+
+export default router;

@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import authRoutes from '../modules/auth/auth.route';
+import destinationRoutes from '../modules/destination/destination.route';
 
 /**
  * Main Router
@@ -20,8 +21,8 @@ export const createRouter = (): Router => {
 
   // Module routes
   router.use('/auth', authRoutes);
+  router.use('/destinations', destinationRoutes);
   // router.use('/users', userRoutes);
-  // router.use('/destinations', destinationRoutes);
   // router.use('/trips', tripRoutes);
   // router.use('/reviews', reviewRoutes);
   // router.use('/ai', aiRoutes);
