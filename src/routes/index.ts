@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import authRoutes from '../modules/auth/auth.route';
 import destinationRoutes from '../modules/destination/destination.route';
 import tripRoutes from '../modules/trip/trip.route';
+import reviewRoutes from '../modules/review/review.route';
 
 /**
  * Main Router
@@ -24,8 +25,8 @@ export const createRouter = (): Router => {
   router.use('/auth', authRoutes);
   router.use('/destinations', destinationRoutes);
   router.use('/trips', tripRoutes);
+  router.use('/reviews', reviewRoutes);
   // router.use('/users', userRoutes);
-  // router.use('/reviews', reviewRoutes);
   // router.use('/ai', aiRoutes);
   // router.use('/dashboard', dashboardRoutes);
 
