@@ -14,6 +14,10 @@ const userSchema = new Schema<IUser>(
       lowercase: true,
       trim: true,
     },
+    password: {
+      type: String,
+      select: false, // Don't return password by default
+    },
     photo: {
       type: String,
     },

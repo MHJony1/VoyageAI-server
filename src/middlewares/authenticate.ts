@@ -1,30 +1,48 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
+import { extractTokenFromHeader, verifyToken } from '../utils/token';
+import { ForbiddenError } from '../errors/AppError';
+import type { IAuthRequest } from '../interfaces/IRequest';
 
 /**
- * Authentication Middleware (Structure only)
- * To be implemented in Phase 3 with actual JWT verification
- * Usage: app.use('/api/v1/protected', authenticate);
+ * Authentication Middleware
+ * Verifies JWT token and attaches user to request
  */
-export const authenticate = (_req: Request, _res: Response, next: NextFunction) => {
-  // TODO: Implement JWT verification
-  // 1. Extract token from Authorization header
-  // 2. Verify token signature
-  // 3. Attach user to request object
-  // 4. Call next()
+export const authenticate = (req: IAuthRequest, _res: Response, next: NextFunction) => {
+  try {
+    const token = extractTokenFromHeader(req.headers.authorization);
+    const payload = verifyToken(token);
 
-  next();
+    req.user = {
+      id: payload.userId,
+      email: payload.email,
+      name: '', // Name not in token
+      role: payload.role,
+    };
+
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 /**
- * Authorization Middleware (Structure only)
- * To be implemented in Phase 3 for role-based access control
+ * Authorization Middleware
+ * Checks if user has required role
  */
 export const authorize =
-  (..._roles: string[]) =>
-  (_req: Request, _res: Response, next: NextFunction) => {
-    // TODO: Implement role-based authorization
-    // 1. Check if user has required role
-    // 2. Throw ForbiddenError if not authorized
+  (...allowedRoles: string[]) =>
+  (req: IAuthRequest, _res: Response, next: NextFunction) => {
+    try {
+      if (!req.user) {
+        throw new ForbiddenError('User not authenticated');
+      }
 
-    next();
+      if (!allowedRoles.includes(req.user.role)) {
+        throw new ForbiddenError('Insufficient permissions');
+      }
+
+      next();
+    } catch (error) {
+      next(error);
+    }
   };

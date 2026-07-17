@@ -1,38 +1,43 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { catchAsync } from '../../utils/catchAsync';
+import { sendSuccess } from '../../utils/response';
+import { authService } from './auth.service';
+import type { IAuthRequest } from '../../interfaces/IRequest';
 
 /**
  * Auth Controller
  * Handles authentication endpoint requests
- * To be implemented in Phase 3
  */
 
 export const authController = {
-  register: catchAsync(async (_req: Request, _res: Response) => {
-    // TODO: Implement register logic
-    // 1. Validate request body
-    // 2. Call auth service
-    // 3. Return response
+  register: catchAsync(async (req: IAuthRequest, res: Response) => {
+    const result = await authService.register(req.body);
+    sendSuccess(res, 201, 'Registered successfully', result);
   }),
 
-  login: catchAsync(async (_req: Request, _res: Response) => {
-    // TODO: Implement login logic
-    // 1. Validate request body
-    // 2. Call auth service
-    // 3. Return JWT token
+  login: catchAsync(async (req: IAuthRequest, res: Response) => {
+    const { email, password } = req.body;
+    const result = await authService.login(email, password);
+    sendSuccess(res, 200, 'Logged in successfully', result);
   }),
 
-  googleLogin: catchAsync(async (_req: Request, _res: Response) => {
-    // TODO: Implement Google OAuth login
+  googleLogin: catchAsync(async (req: IAuthRequest, res: Response) => {
+    const { token } = req.body;
+    const result = await authService.googleLogin(token);
+    sendSuccess(res, 200, 'Google login successful', result);
   }),
 
-  getCurrentUser: catchAsync(async (_req: Request, _res: Response) => {
-    // TODO: Implement get current user
-    // 1. Extract user from request (from authenticate middleware)
-    // 2. Return user data
+  getCurrentUser: catchAsync(async (req: IAuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+    const user = await authService.getCurrentUser(userId);
+    sendSuccess(res, 200, 'User fetched successfully', user);
   }),
 
-  logout: catchAsync(async (_req: Request, _res: Response) => {
-    // TODO: Implement logout logic
+  logout: catchAsync(async (_req: IAuthRequest, res: Response) => {
+    sendSuccess(res, 200, 'Logged out successfully');
   }),
 };

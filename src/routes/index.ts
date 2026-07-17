@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import authRoutes from '../modules/auth/auth.route';
 
 /**
  * Main Router
@@ -17,11 +18,14 @@ export const createRouter = (): Router => {
     });
   });
 
-  // Module routes will be registered here
-  // Example:
-  // router.use('/auth', require('../modules/auth/auth.route').default);
-  // router.use('/users', require('../modules/user/user.route').default);
-  // router.use('/destinations', require('../modules/destination/destination.route').default);
+  // Module routes
+  router.use('/auth', authRoutes);
+  // router.use('/users', userRoutes);
+  // router.use('/destinations', destinationRoutes);
+  // router.use('/trips', tripRoutes);
+  // router.use('/reviews', reviewRoutes);
+  // router.use('/ai', aiRoutes);
+  // router.use('/dashboard', dashboardRoutes);
 
   return router;
 };

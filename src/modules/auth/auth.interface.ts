@@ -5,16 +5,22 @@ export interface IUser {
   _id: string;
   name: string;
   email: string;
-  password?: string;
   photo?: string;
+  provider: string;
   role: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface IAuthPayload {
-  userId: string;
+export interface IUserResponse {
+  _id: string;
+  name: string;
   email: string;
+  photo?: string;
+  provider: string;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IRegisterRequest {
@@ -28,7 +34,11 @@ export interface ILoginRequest {
   password: string;
 }
 
+export interface IGoogleLoginRequest {
+  token: string;
+}
+
 export interface IAuthResponse {
   token: string;
-  user: Omit<IUser, 'password'>;
+  user: IUserResponse;
 }
