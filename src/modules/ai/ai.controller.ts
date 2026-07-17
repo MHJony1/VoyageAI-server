@@ -20,7 +20,7 @@ export const aiController = {
       return;
     }
 
-    const result = await aiService.generateTripPlan(req.body);
+    const result = await aiService.generateTripPlan(userId, req.body);
     sendSuccess(res, 200, 'Trip plan generated successfully', result);
   }),
 

@@ -5,9 +5,11 @@
 export interface ITripPlanRequest {
   destination: string;
   budget: number;
-  days: number;
+  numberOfDays: number;
   travelStyle: string;
   interests: string[];
+  groupType?: string;
+  preferredSeason?: string;
 }
 
 export interface IRecommendationRequest {

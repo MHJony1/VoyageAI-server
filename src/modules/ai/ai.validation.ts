@@ -7,9 +7,11 @@ import { z } from 'zod';
 export const tripPlanSchema = z.object({
   destination: z.string().min(2, 'Destination required'),
   budget: z.number().positive('Budget must be positive'),
-  days: z.number().min(1).max(30),
+  numberOfDays: z.number().min(1).max(30),
   travelStyle: z.string().min(2, 'Travel style required'),
   interests: z.array(z.string()).min(1, 'At least one interest required'),
+  groupType: z.string().optional(),
+  preferredSeason: z.string().optional(),
 });
 
 export const recommendationSchema = z.object({

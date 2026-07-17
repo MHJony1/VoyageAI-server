@@ -11,25 +11,45 @@ export const promptBuilder = {
    */
   buildTripPlanPrompt: (input: TripPlanInput): string => {
     return `
-You are an expert travel planner. Create a detailed travel itinerary based on the following information:
+You are an expert travel planner. Create a detailed, practical ${input.numberOfDays}-day travel itinerary for the following trip:
 
-Destination: ${input.destination}
-Budget: ${input.budget} (local currency)
-Duration: ${input.days} days
-Travel Style: ${input.travelStyle}
-Interests: ${input.interests.join(', ')}
+TRIP DETAILS:
+- Destination: ${input.destination}
+- Total Budget: ${input.budget} (local currency)
+- Duration: ${input.numberOfDays} days
+- Travel Style: ${input.travelStyle}
+- Group Type: ${input.groupType || 'Not specified'}
+- Preferred Season: ${input.preferredSeason || 'Any'}
+- Interests: ${input.interests.join(', ')}
 
-Please provide:
-1. Day-wise detailed itinerary (1-2 activities per day)
-2. Estimated budget breakdown
-3. Recommended hotels (budget range)
-4. Transportation tips
-5. Food recommendations
-6. Travel tips and warnings
-7. Packing list
+RESPONSE FORMAT - Provide ONLY valid JSON (no markdown, no extra text):
+{
+  "overview": "2-3 sentence summary of the trip",
+  "itinerary": [
+    {"day": 1, "title": "Day Title", "activities": ["Activity 1", "Activity 2"], "meals": {"breakfast": "Location/Type", "lunch": "Location/Type", "dinner": "Location/Type"}}
+  ],
+  "budget": {
+    "accommodation": number,
+    "food": number,
+    "activities": number,
+    "transportation": number,
+    "other": number,
+    "total": number
+  },
+  "hotels": ["Hotel name with price range per night", ...],
+  "transportation": ["Method with estimated cost", ...],
+  "food": ["Restaurant/food type with estimated cost", ...],
+  "activities": ["Activity with estimated cost", ...],
+  "tips": ["Travel tip 1", "Travel tip 2", ...],
+  "packing": ["Item 1", "Item 2", ...]
+}
 
-Format the response in clear markdown with sections for each category.
-Keep recommendations practical and budget-conscious.
+IMPORTANT:
+- Return ONLY valid JSON, no markdown formatting
+- Days must have 1-3 activities
+- Budget numbers must be realistic for the destination
+- Include practical, actionable recommendations
+- All costs should be in the local currency mentioned
     `.trim();
   },
 

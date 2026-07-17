@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { AIHistory } from '../../models/aiHistory.model';
 import { config } from '../../config/environment';
 import { AppError } from '../../errors/AppError';
 import { logger } from '../../utils/logger';
@@ -18,20 +19,36 @@ export const aiService = {
   /**
    * Generate trip plan
    */
-  generateTripPlan: async (input: TripPlanInput): Promise<IAIResponse> => {
+  generateTripPlan: async (userId: string, input: TripPlanInput): Promise<any> => {
     try {
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
       const prompt = promptBuilder.buildTripPlanPrompt(input);
 
       logger.debug('Calling Gemini API for trip plan');
       const result = await model.generateContent(prompt);
-      const response = result.response.text();
+      const rawResponse = result.response.text();
 
-      const parsed = responseParser.parseTripPlan(response);
+      const parsed = responseParser.parseTripPlan(rawResponse);
+
+      // Save to AIHistory
+      await AIHistory.create({
+        userId,
+        type: 'planner',
+        prompt: prompt.substring(0, 500), // Save first 500 chars of prompt
+        response: rawResponse.substring(0, 1000), // Save first 1000 chars of response
+      });
 
       return {
         type: 'trip-plan',
-        response: parsed.itinerary,
+        overview: parsed.overview,
+        itinerary: parsed.itinerary,
+        budget: parsed.budget,
+        hotels: parsed.hotels,
+        transportation: parsed.transportation,
+        food: parsed.food,
+        activities: parsed.activities,
+        tips: parsed.tips,
+        packing: parsed.packing,
       };
     } catch (error) {
       logger.error('Trip plan generation failed:', error);

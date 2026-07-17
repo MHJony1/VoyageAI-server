@@ -7,24 +7,42 @@ export const responseParser = {
   /**
    * Parse trip plan response
    */
-  parseTripPlan: (response: string): { itinerary: string; tips: string[] } => {
-    // Extract markdown sections
-    const sections = response.split('##').map((s) => s.trim());
-    const tips: string[] = [];
+  parseTripPlan: (response: string): any => {
+    try {
+      // Try to extract JSON from response
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('No JSON found in response');
+      }
 
-    // Extract travel tips if present
-    const tipsSection = sections.find((s) => s.toLowerCase().includes('tip'));
-    if (tipsSection) {
-      const lines = tipsSection
-        .split('\n')
-        .filter((l) => l.startsWith('-') || l.startsWith('*'));
-      tips.push(...lines.map((l) => l.replace(/^[-*]\s*/, '')));
+      const parsed = JSON.parse(jsonMatch[0]);
+
+      return {
+        overview: parsed.overview || '',
+        itinerary: parsed.itinerary || [],
+        budget: parsed.budget || {},
+        hotels: parsed.hotels || [],
+        transportation: parsed.transportation || [],
+        food: parsed.food || [],
+        activities: parsed.activities || [],
+        tips: parsed.tips || [],
+        packing: parsed.packing || [],
+      };
+    } catch (error) {
+      console.error('Failed to parse trip plan response:', error);
+      // Return a fallback structure if parsing fails
+      return {
+        overview: response.substring(0, 200),
+        itinerary: [],
+        budget: {},
+        hotels: [],
+        transportation: [],
+        food: [],
+        activities: [],
+        tips: [],
+        packing: [],
+      };
     }
-
-    return {
-      itinerary: response,
-      tips: tips.slice(0, 5),
-    };
   },
 
   /**
