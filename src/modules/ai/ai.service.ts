@@ -92,10 +92,10 @@ export const aiService = {
   /**
    * Chat with AI
    */
-  chat: async (input: ChatInput): Promise<IAIResponse> => {
+  chat: async (input: ChatInput & { context?: string; conversationId?: string }): Promise<IAIResponse> => {
     try {
       const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-      const prompt = promptBuilder.buildChatPrompt(input.message);
+      const prompt = promptBuilder.buildChatPrompt(input.message, input.context);
 
       logger.debug('Calling Gemini API for chat');
       const result = await model.generateContent(prompt);
@@ -103,13 +103,10 @@ export const aiService = {
 
       const parsed = responseParser.parseChat(response);
 
-      // Generate or use existing conversation ID
-      const conversationId = input.conversationId || `conv_${Date.now()}`;
-
       return {
         type: 'chat',
         response: parsed.message,
-        conversationId,
+        conversationId: input.conversationId || `conv_${Date.now()}`,
       };
     } catch (error) {
       logger.error('Chat generation failed:', error);

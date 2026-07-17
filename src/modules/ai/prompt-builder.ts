@@ -104,16 +104,15 @@ IMPORTANT:
   /**
    * Build chat prompt
    */
-  buildChatPrompt: (message: string, conversationHistory?: string): string => {
+  buildChatPrompt: (message: string, context?: string): string => {
     return `
-You are a helpful travel assistant for VoyageAI. Answer travel-related questions.
+You are a helpful travel assistant for VoyageAI. Answer travel-related questions concisely.
 
-${conversationHistory ? `Previous conversation:\n${conversationHistory}\n\n` : ''}
+${context ? `Conversation history:\n${context}\n\n` : ''}
 
-User question: ${message}
+User message: ${message}
 
-Provide helpful, concise travel advice. If you need clarification, ask follow-up questions.
-Keep responses under 200 words.
+Provide helpful, practical travel advice. Keep responses under 150 words. Be conversational and friendly.
     `.trim();
   },
 };
