@@ -58,22 +58,46 @@ IMPORTANT:
    */
   buildRecommendationPrompt: (input: RecommendationInput): string => {
     return `
-You are a travel expert recommending destinations. Suggest the best destinations based on:
+You are an expert travel recommendation AI. Recommend the best destinations based on the user's preferences:
 
-Budget: ${input.budget} (local currency)
-Season: ${input.season}
-Group Type: ${input.groupType}
-Interests: ${input.interests.join(', ')}
+PREFERENCES:
+- Budget: ${input.budget} (local currency)
+- Preferred Season: ${input.preferredSeason}
+- Travel Style: ${input.travelStyle}
+- Group Type: ${input.groupType}
+- Interests: ${input.interests.join(', ')}
 
-Please provide:
-1. Top 3 recommended destinations with reasons
-2. Why each is suitable for the given budget and season
-3. Alternative budget-friendly options
-4. Best time to visit
-5. Travel tips for each destination
+RESPONSE FORMAT - Provide ONLY valid JSON (no markdown, no extra text):
+{
+  "destinations": [
+    {
+      "name": "Destination Name",
+      "country": "Country",
+      "reason": "Why this is recommended for the given preferences",
+      "estimatedBudget": number,
+      "bestTimeToVisit": "Month or season",
+      "mustVisitAttractions": ["Attraction 1", "Attraction 2", "Attraction 3"],
+      "travelTips": ["Tip 1", "Tip 2"],
+      "suggestedDuration": "Number of days"
+    }
+  ],
+  "alternatives": [
+    {
+      "name": "Alternative Destination",
+      "reason": "Budget-friendly alternative",
+      "estimatedBudget": number
+    }
+  ],
+  "generalTips": ["Tip 1", "Tip 2", "Tip 3"]
+}
 
-Format the response in markdown with clear sections.
-Make recommendations practical and diverse.
+IMPORTANT:
+- Return ONLY valid JSON, no markdown formatting
+- Suggest 3 primary destinations
+- Provide 2-3 alternative destinations
+- Budget estimates must be realistic for the destination
+- Include practical, actionable recommendations
+- Consider the season and travel style in all suggestions
     `.trim();
   },
 

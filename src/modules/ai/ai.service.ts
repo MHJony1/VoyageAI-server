@@ -21,7 +21,7 @@ export const aiService = {
    */
   generateTripPlan: async (userId: string, input: TripPlanInput): Promise<any> => {
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
       const prompt = promptBuilder.buildTripPlanPrompt(input);
 
       logger.debug('Calling Gemini API for trip plan');
@@ -59,21 +59,32 @@ export const aiService = {
   /**
    * Generate recommendation
    */
-  generateRecommendation: async (input: RecommendationInput): Promise<IAIResponse> => {
+  generateRecommendation: async (userId: string, input: RecommendationInput): Promise<any> => {
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
       const prompt = promptBuilder.buildRecommendationPrompt(input);
 
       logger.debug('Calling Gemini API for recommendation');
       const result = await model.generateContent(prompt);
-      const response = result.response.text();
+      const rawResponse = result.response.text();
 
+      const parsed = responseParser.parseRecommendation(rawResponse);
+
+      // Save to AIHistory
+      await AIHistory.create({
+        userId,
+        type: 'recommendation',
+        prompt: prompt.substring(0, 500), // Save first 500 chars of prompt
+        response: rawResponse.substring(0, 1000), // Save first 1000 chars of response
+      });
       return {
         type: 'recommendation',
-        response,
+        destinations: parsed.destinations,
+        alternatives: parsed.alternatives,
+        generalTips: parsed.generalTips,
       };
-    } catch (error) {
-      logger.error('Recommendation generation failed:', error);
+    } catch (error: any) {
+      logger.error('Recommendation generation failed:', error?.message || error);
       throw new AppError('Failed to generate recommendation. Please try again.', 500);
     }
   },
@@ -83,7 +94,7 @@ export const aiService = {
    */
   chat: async (input: ChatInput): Promise<IAIResponse> => {
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
       const prompt = promptBuilder.buildChatPrompt(input.message);
 
       logger.debug('Calling Gemini API for chat');
@@ -111,7 +122,7 @@ export const aiService = {
    */
   verifyConnection: async (): Promise<boolean> => {
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
       const result = await model.generateContent('Say "ready"');
       const response = result.response.text();
       logger.success('Gemini connection verified');

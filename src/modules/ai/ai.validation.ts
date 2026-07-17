@@ -16,7 +16,8 @@ export const tripPlanSchema = z.object({
 
 export const recommendationSchema = z.object({
   budget: z.number().positive('Budget must be positive'),
-  season: z.string().min(2, 'Season required'),
+  preferredSeason: z.string().min(2, 'Season required'),
+  travelStyle: z.string().min(2, 'Travel style required'),
   groupType: z.string().min(2, 'Group type required'),
   interests: z.array(z.string()).min(1, 'At least one interest required'),
 });

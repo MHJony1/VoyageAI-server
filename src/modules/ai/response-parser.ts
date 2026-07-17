@@ -48,30 +48,30 @@ export const responseParser = {
   /**
    * Parse recommendation response
    */
-  parseRecommendation: (response: string): { destinations: string[]; tips: string[] } => {
-    const lines = response.split('\n');
-    const destinations: string[] = [];
-    const tips: string[] = [];
-
-    let currentSection = '';
-    for (const line of lines) {
-      if (line.toLowerCase().includes('destination')) {
-        currentSection = 'destination';
-      } else if (line.toLowerCase().includes('tip')) {
-        currentSection = 'tips';
+  parseRecommendation: (response: string): any => {
+    try {
+      // Try to extract JSON from response
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('No JSON found in response');
       }
 
-      if (currentSection === 'destination' && (line.startsWith('#') || line.startsWith('-'))) {
-        destinations.push(line.replace(/^#+\s*|-\s*/, ''));
-      } else if (currentSection === 'tips' && (line.startsWith('-') || line.startsWith('*'))) {
-        tips.push(line.replace(/^[-*]\s*/, ''));
-      }
+      const parsed = JSON.parse(jsonMatch[0]);
+
+      return {
+        destinations: parsed.destinations || [],
+        alternatives: parsed.alternatives || [],
+        generalTips: parsed.generalTips || [],
+      };
+    } catch (error) {
+      console.error('Failed to parse recommendation response:', error);
+      // Return a fallback structure if parsing fails
+      return {
+        destinations: [],
+        alternatives: [],
+        generalTips: [],
+      };
     }
-
-    return {
-      destinations: destinations.slice(0, 5),
-      tips: tips.slice(0, 5),
-    };
   },
 
   /**

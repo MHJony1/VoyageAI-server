@@ -34,7 +34,7 @@ export const aiController = {
       return;
     }
 
-    const result = await aiService.generateRecommendation(req.body);
+    const result = await aiService.generateRecommendation(userId, req.body);
     sendSuccess(res, 200, 'Recommendations generated successfully', result);
   }),
 
