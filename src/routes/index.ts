@@ -4,6 +4,7 @@ import destinationRoutes from '../modules/destination/destination.route';
 import tripRoutes from '../modules/trip/trip.route';
 import reviewRoutes from '../modules/review/review.route';
 import aiRoutes from '../modules/ai/ai.route';
+import dashboardRoutes from '../modules/dashboard/dashboard.route';
 
 /**
  * Main Router
@@ -28,8 +29,8 @@ export const createRouter = (): Router => {
   router.use('/trips', tripRoutes);
   router.use('/reviews', reviewRoutes);
   router.use('/ai', aiRoutes);
+  router.use('/dashboard', dashboardRoutes);
   // router.use('/users', userRoutes);
-  // router.use('/dashboard', dashboardRoutes);
 
   return router;
 };
