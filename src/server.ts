@@ -1,16 +1,30 @@
 import app from './app';
+import { config } from './config/environment';
+import { connectDatabase } from './config/database';
+import { logger } from './utils/logger';
 
-const PORT = process.env.PORT || 5000;
+const startServer = async () => {
+  try {
+    // Connect to database
+    await connectDatabase();
 
-const server = app.listen(PORT, () => {
-  console.log(`✓ Server running on port ${PORT}`);
-  console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+    // Start server
+    const server = app.listen(config.port, () => {
+      logger.success(`Server running on port ${config.port}`);
+      logger.success(`Environment: ${config.nodeEnv}`);
+    });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
-  server.close(() => {
-    console.log('HTTP server closed');
-  });
-});
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      logger.info('SIGTERM signal received: closing HTTP server');
+      server.close(() => {
+        logger.success('HTTP server closed');
+      });
+    });
+  } catch (error) {
+    logger.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
