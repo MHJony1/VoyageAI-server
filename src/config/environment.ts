@@ -24,7 +24,7 @@ export const config = {
 };
 
 // Validate required env vars
-const requiredEnvVars = ['PORT', 'NODE_ENV', 'JWT_SECRET'];
+const requiredEnvVars = ['PORT', 'NODE_ENV', 'JWT_SECRET', 'DATABASE_URL', 'GEMINI_API_KEY'];
 const missing = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
 if (missing.length > 0) {

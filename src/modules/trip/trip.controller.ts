@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { catchAsync } from '../../utils/catchAsync';
 import { sendSuccess, sendPaginated } from '../../utils/response';
 import { tripService } from './trip.service';
+import { UnauthorizedError } from '../../errors/AppError';
 import type { IAuthRequest } from '../../interfaces/IRequest';
 
 const getQueryParam = (value: any): string | undefined => {
@@ -22,8 +23,7 @@ export const tripController = {
   create: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const trip = await tripService.create(userId, req.body);

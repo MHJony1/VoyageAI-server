@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { UnauthorizedError } from '../../errors/AppError';
 import { catchAsync } from '../../utils/catchAsync';
 import { sendSuccess } from '../../utils/response';
 import { dashboardService } from './dashboard.service';
@@ -16,8 +17,7 @@ export const dashboardController = {
   getOverview: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const overview = await dashboardService.getOverview(userId);
@@ -30,8 +30,7 @@ export const dashboardController = {
   getStatistics: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const statistics = await dashboardService.getStatistics(userId);

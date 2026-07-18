@@ -1,3 +1,5 @@
+import { logger } from '../../utils/logger';
+
 /**
  * Response Parser
  * Parses and formats Gemini API responses
@@ -29,7 +31,7 @@ export const responseParser = {
         packing: parsed.packing || [],
       };
     } catch (error) {
-      console.error('Failed to parse trip plan response:', error);
+      logger.error('Failed to parse trip plan response:', error);
       // Return a fallback structure if parsing fails
       return {
         overview: response.substring(0, 200),

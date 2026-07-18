@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { UnauthorizedError } from '../../errors/AppError';
 import { catchAsync } from '../../utils/catchAsync';
 import { sendSuccess, sendPaginated } from '../../utils/response';
 import { conversationService } from './conversation.service';
@@ -18,8 +19,7 @@ export const conversationController = {
   chat: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const { message, conversationId } = req.body;

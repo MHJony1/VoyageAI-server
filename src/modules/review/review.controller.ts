@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { UnauthorizedError } from '../../errors/AppError';
 import { catchAsync } from '../../utils/catchAsync';
 import { sendSuccess, sendPaginated } from '../../utils/response';
 import { reviewService } from './review.service';
@@ -22,8 +23,7 @@ export const reviewController = {
   create: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const review = await reviewService.create(userId, req.body);
@@ -86,8 +86,7 @@ export const reviewController = {
   getById: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
@@ -101,8 +100,7 @@ export const reviewController = {
   update: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
@@ -116,8 +114,7 @@ export const reviewController = {
   delete: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;

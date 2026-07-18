@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { catchAsync } from '../../utils/catchAsync';
 import { sendSuccess } from '../../utils/response';
 import { aiService } from './ai.service';
+import { UnauthorizedError } from '../../errors/AppError';
 import type { IAuthRequest } from '../../interfaces/IRequest';
 
 /**
@@ -16,8 +17,7 @@ export const aiController = {
   tripPlan: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const result = await aiService.generateTripPlan(userId, req.body);
@@ -30,8 +30,7 @@ export const aiController = {
   recommend: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const result = await aiService.generateRecommendation(userId, req.body);
@@ -44,8 +43,7 @@ export const aiController = {
   chat: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' });
-      return;
+      throw new UnauthorizedError('User not authenticated');
     }
 
     const result = await aiService.chat(req.body);
