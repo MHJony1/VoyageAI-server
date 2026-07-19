@@ -18,6 +18,14 @@ export const config = {
   // Gemini
   geminiApiKey: process.env.GEMINI_API_KEY || '',
 
+  // Google OAuth
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+
+  // Demo account
+  demoEmail: process.env.DEMO_EMAIL || 'demo@voyageai.com',
+  demoPassword: process.env.DEMO_PASSWORD || 'demopassword',
+  demoName: process.env.DEMO_NAME || 'Demo User',
+
   // Flags
   isDevelopment: process.env.NODE_ENV === 'development',
   isProduction: process.env.NODE_ENV === 'production',

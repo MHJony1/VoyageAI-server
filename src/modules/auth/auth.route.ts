@@ -13,6 +13,7 @@ const router = Router();
 router.post('/register', validate({ body: registerSchema }), authController.register);
 router.post('/login', validate({ body: loginSchema }), authController.login);
 router.post('/google', validate({ body: googleLoginSchema }), authController.googleLogin);
+router.post('/demo', authController.demoLogin);
 
 // Protected routes
 router.get('/me', authenticate, authController.getCurrentUser);

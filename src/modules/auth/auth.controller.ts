@@ -27,6 +27,11 @@ export const authController = {
     sendSuccess(res, 200, 'Google login successful', result);
   }),
 
+  demoLogin: catchAsync(async (_req: IAuthRequest, res: Response) => {
+    const result = await authService.demoLogin();
+    sendSuccess(res, 200, 'Demo login successful', result);
+  }),
+
   getCurrentUser: catchAsync(async (req: IAuthRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {

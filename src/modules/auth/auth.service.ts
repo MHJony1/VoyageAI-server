@@ -2,12 +2,47 @@ import { User } from '../../models/user.model';
 import { hashPassword, comparePassword } from '../../utils/password';
 import { generateToken } from '../../utils/token';
 import { ConflictError, UnauthorizedError } from '../../errors/AppError';
+import { config } from '../../config/environment';
+import { OAuth2Client } from 'google-auth-library';
 import type { IRegisterRequest, IAuthResponse, IUserResponse } from './auth.interface';
 
 /**
  * Auth Service
  * Contains authentication business logic
  */
+
+const googleClient = new OAuth2Client(config.googleClientId);
+
+const buildAuthResponse = (user: {
+  _id: { toString(): string };
+  name: string;
+  email: string;
+  photo?: string;
+  provider: string;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
+}): IAuthResponse => {
+  const token = generateToken({
+    userId: user._id.toString(),
+    email: user.email,
+    role: user.role,
+  });
+
+  return {
+    token,
+    user: {
+      _id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      photo: user.photo,
+      provider: user.provider,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    },
+  };
+};
 
 export const authService = {
   register: async (data: IRegisterRequest): Promise<IAuthResponse> => {
@@ -31,27 +66,7 @@ export const authService = {
       role: 'user',
     });
 
-    // Generate JWT token
-    const token = generateToken({
-      userId: user._id.toString(),
-      email: user.email,
-      role: user.role,
-    });
-
-    // Return token and user
-    return {
-      token,
-      user: {
-        _id: user._id.toString(),
-        name: user.name,
-        email: user.email,
-        photo: user.photo,
-        provider: user.provider,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      },
-    };
+    return buildAuthResponse(user);
   },
 
   login: async (email: string, password: string): Promise<IAuthResponse> => {
@@ -67,38 +82,59 @@ export const authService = {
       throw new UnauthorizedError('Invalid email or password');
     }
 
-    // Generate JWT token
-    const token = generateToken({
-      userId: user._id.toString(),
-      email: user.email,
-      role: user.role,
-    });
-
-    // Return token and user
-    return {
-      token,
-      user: {
-        _id: user._id.toString(),
-        name: user.name,
-        email: user.email,
-        photo: user.photo,
-        provider: user.provider,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      },
-    };
+    return buildAuthResponse(user);
   },
 
-  googleLogin: async (_googleToken: string): Promise<IAuthResponse> => {
-    // TODO: Implement Google OAuth verification and login
-    // 1. Verify Google token with Google API
-    // 2. Extract user info from token
-    // 3. Find or create user in database
-    // 4. Generate JWT token
-    // 5. Return token and user data
+  googleLogin: async (idToken: string): Promise<IAuthResponse> => {
+    // Verify the Google ID token against our client ID
+    let payload;
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken,
+        audience: config.googleClientId,
+      });
+      payload = ticket.getPayload();
+    } catch {
+      throw new UnauthorizedError('Invalid Google token');
+    }
 
-    throw new Error('Google login not yet implemented');
+    if (!payload || !payload.email) {
+      throw new UnauthorizedError('Google account has no email');
+    }
+
+    // Find existing user or create a new one
+    let user = await User.findOne({ email: payload.email });
+    if (!user) {
+      user = await User.create({
+        name: payload.name || payload.email.split('@')[0],
+        email: payload.email,
+        photo: payload.picture,
+        provider: 'google',
+        role: 'user',
+      });
+    } else if (payload.picture && !user.photo) {
+      user.photo = payload.picture;
+      await user.save();
+    }
+
+    return buildAuthResponse(user);
+  },
+
+  demoLogin: async (): Promise<IAuthResponse> => {
+    // Find the demo user or create it on first use
+    let user = await User.findOne({ email: config.demoEmail });
+    if (!user) {
+      const hashedPassword = await hashPassword(config.demoPassword);
+      user = await User.create({
+        name: config.demoName,
+        email: config.demoEmail,
+        password: hashedPassword,
+        provider: 'local',
+        role: 'user',
+      });
+    }
+
+    return buildAuthResponse(user);
   },
 
   getCurrentUser: async (userId: string): Promise<IUserResponse> => {
