@@ -33,6 +33,10 @@ const userSchema = new Schema<IUser>(
       enum: ['admin', 'user', 'moderator'],
       default: 'user',
     },
+    settings: {
+      type: Schema.Types.Mixed,
+      default: {},
+    },
   },
   {
     timestamps: true,

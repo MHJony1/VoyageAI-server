@@ -7,6 +7,7 @@ export interface IUser extends Document {
   photo?: string;
   provider: string;
   role: string;
+  settings?: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
 }

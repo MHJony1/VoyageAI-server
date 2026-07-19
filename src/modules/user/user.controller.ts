@@ -28,4 +28,40 @@ export const userController = {
     const updatedUser = await userService.updateProfile(userId, req.body);
     sendSuccess(res, 200, 'Profile updated successfully', updatedUser);
   }),
+
+  changePassword: catchAsync(async (req: IAuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      throw new UnauthorizedError('User not authenticated');
+    }
+    const { oldPassword, newPassword } = req.body;
+    await userService.changePassword(userId, oldPassword, newPassword);
+    sendSuccess(res, 200, 'Password changed successfully');
+  }),
+
+  getSettings: catchAsync(async (req: IAuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      throw new UnauthorizedError('User not authenticated');
+    }
+    const settings = await userService.getSettings(userId);
+    sendSuccess(res, 200, 'Settings retrieved successfully', settings);
+  }),
+
+  updateSettings: catchAsync(async (req: IAuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      throw new UnauthorizedError('User not authenticated');
+    }
+    const settings = await userService.updateSettings(userId, req.body);
+    sendSuccess(res, 200, 'Settings updated successfully', settings);
+  }),
+
+  logoutAllDevices: catchAsync(async (req: IAuthRequest, res: Response) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      throw new UnauthorizedError('User not authenticated');
+    }
+    sendSuccess(res, 200, 'Logged out from all devices');
+  }),
 };
