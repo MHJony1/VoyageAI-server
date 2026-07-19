@@ -16,6 +16,7 @@ export const createDestinationSchema = z.object({
   estimatedBudget: z.number().positive('Budget must be positive'),
   bestSeason: z.string().min(2, 'Season required'),
   featured: z.boolean().optional(),
+  published: z.boolean().optional(),
   duration: z.string().optional(),
   bestTimeDescription: z.string().optional(),
   highlights: z.array(z.string()).optional(),

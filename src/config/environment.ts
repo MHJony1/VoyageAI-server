@@ -26,6 +26,11 @@ export const config = {
   demoPassword: process.env.DEMO_PASSWORD || 'demopassword',
   demoName: process.env.DEMO_NAME || 'Demo User',
 
+  // Admin seed account
+  adminEmail: process.env.ADMIN_EMAIL || 'admin@voyageai.com',
+  adminPassword: process.env.ADMIN_PASSWORD || 'admin12345',
+  adminName: process.env.ADMIN_NAME || 'Admin',
+
   // Flags
   isDevelopment: process.env.NODE_ENV === 'development',
   isProduction: process.env.NODE_ENV === 'production',

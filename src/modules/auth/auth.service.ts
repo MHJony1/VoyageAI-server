@@ -1,7 +1,7 @@
 import { User } from '../../models/user.model';
 import { hashPassword, comparePassword } from '../../utils/password';
 import { generateToken } from '../../utils/token';
-import { ConflictError, UnauthorizedError } from '../../errors/AppError';
+import { ConflictError, UnauthorizedError, ForbiddenError } from '../../errors/AppError';
 import { config } from '../../config/environment';
 import { OAuth2Client } from 'google-auth-library';
 import type { IRegisterRequest, IAuthResponse, IUserResponse } from './auth.interface';
@@ -80,6 +80,10 @@ export const authService = {
     const passwordMatch = await comparePassword(password, (user as any).password || '');
     if (!passwordMatch) {
       throw new UnauthorizedError('Invalid email or password');
+    }
+
+    if ((user as any).blocked) {
+      throw new ForbiddenError('Your account has been blocked. Contact support.');
     }
 
     return buildAuthResponse(user);

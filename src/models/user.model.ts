@@ -33,6 +33,10 @@ const userSchema = new Schema<IUser>(
       enum: ['admin', 'user', 'moderator'],
       default: 'user',
     },
+    blocked: {
+      type: Boolean,
+      default: false,
+    },
     settings: {
       type: Schema.Types.Mixed,
       default: {},

@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "seed:admin": "ts-node src/scripts/seedAdmin.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

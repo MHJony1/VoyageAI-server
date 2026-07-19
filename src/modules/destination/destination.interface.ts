@@ -15,6 +15,7 @@ export interface IDestinationResponse {
   estimatedBudget: number;
   bestSeason: string;
   featured: boolean;
+  published: boolean;
   duration?: string;
   bestTimeDescription?: string;
   highlights?: string[];

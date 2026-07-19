@@ -22,6 +22,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Root
+app.get('/', (_req, res) => {
+  res.json({ success: true, message: 'Hello World' });
+});
+
 // Routes
 app.use('/api/v1', routes);
 

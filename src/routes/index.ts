@@ -6,6 +6,7 @@ import reviewRoutes from '../modules/review/review.route';
 import aiRoutes from '../modules/ai/ai.route';
 import dashboardRoutes from '../modules/dashboard/dashboard.route';
 import userRoutes from '../modules/user/user.route';
+import adminRoutes from '../modules/admin/admin.route';
 
 /**
  * Main Router
@@ -32,6 +33,7 @@ export const createRouter = (): Router => {
   router.use('/ai', aiRoutes);
   router.use('/dashboard', dashboardRoutes);
   router.use('/users', userRoutes);
+  router.use('/admin', adminRoutes);
 
   return router;
 };

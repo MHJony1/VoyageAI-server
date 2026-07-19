@@ -12,6 +12,7 @@ export interface IDestination extends Document {
   estimatedBudget: number;
   bestSeason: string;
   featured: boolean;
+  published: boolean;
   duration?: string;
   bestTimeDescription?: string;
   highlights?: string[];

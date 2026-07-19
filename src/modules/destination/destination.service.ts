@@ -25,6 +25,7 @@ const toResponse = (doc: any): IDestinationResponse => ({
   estimatedBudget: doc.estimatedBudget,
   bestSeason: doc.bestSeason,
   featured: doc.featured,
+  published: doc.published,
   duration: doc.duration,
   bestTimeDescription: doc.bestTimeDescription,
   highlights: doc.highlights,

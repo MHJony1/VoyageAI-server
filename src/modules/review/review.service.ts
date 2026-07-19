@@ -19,7 +19,7 @@ const convertReviewToResponse = (doc: any): IReviewResponse => ({
   updatedAt: doc.updatedAt,
 });
 
-const updateDestinationRating = async (destinationId: string): Promise<void> => {
+export const updateDestinationRating = async (destinationId: string): Promise<void> => {
   const reviews = await Review.find({ destinationId });
   if (reviews.length === 0) {
     await Destination.findByIdAndUpdate(destinationId, { rating: 0 });

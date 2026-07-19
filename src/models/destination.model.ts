@@ -54,6 +54,10 @@ const destinationSchema = new Schema<IDestination>(
       type: Boolean,
       default: false,
     },
+    published: {
+      type: Boolean,
+      default: true,
+    },
     duration: {
       type: String,
       trim: true,
