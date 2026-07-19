@@ -119,6 +119,16 @@ export const destinationService = {
   },
 
   /**
+   * Get distinct countries present in the destinations collection
+   */
+  getCountries: async (): Promise<string[]> => {
+    const countries = await Destination.distinct('country');
+    return (countries as string[])
+      .filter((c) => typeof c === 'string' && c.trim().length > 0)
+      .sort((a, b) => a.localeCompare(b));
+  },
+
+  /**
    * Get destination by ID
    */
   getById: async (id: string): Promise<IDestinationResponse> => {

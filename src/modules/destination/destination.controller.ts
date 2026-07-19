@@ -64,6 +64,14 @@ export const destinationController = {
   }),
 
   /**
+   * Get distinct countries (public)
+   */
+  getCountries: catchAsync(async (_req: IAuthRequest, res: Response) => {
+    const countries = await destinationService.getCountries();
+    sendSuccess(res, 200, 'Countries fetched successfully', countries);
+  }),
+
+  /**
    * Get destination by ID (public)
    */
   getById: catchAsync(async (req: IAuthRequest, res: Response) => {

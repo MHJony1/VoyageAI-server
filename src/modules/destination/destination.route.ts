@@ -12,6 +12,7 @@ const router = Router();
 // Public routes
 router.get('/', validate({ query: listDestinationsSchema }), destinationController.getAll);
 router.get('/featured', destinationController.getFeatured);
+router.get('/countries', destinationController.getCountries);
 router.get('/:id', validate({ params: destinationIdSchema }), destinationController.getById);
 
 // Protected routes
