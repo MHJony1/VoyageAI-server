@@ -2,7 +2,7 @@ import { Document, Types } from 'mongoose';
 
 export interface ITrip extends Document {
   userId: Types.ObjectId;
-  destinationId: Types.ObjectId;
+  destinationId?: Types.ObjectId;
   destination: string;
   days: number;
   budget: number;

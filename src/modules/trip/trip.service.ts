@@ -11,7 +11,7 @@ import type { ITripResponse, IMyTripsResult } from './trip.interface';
 const convertTripToResponse = (doc: any): ITripResponse => ({
   _id: doc._id.toString(),
   userId: doc.userId.toString(),
-  destinationId: doc.destinationId.toString(),
+  destinationId: doc.destinationId ? doc.destinationId.toString() : undefined,
   destination: doc.destination,
   days: doc.days,
   budget: doc.budget,

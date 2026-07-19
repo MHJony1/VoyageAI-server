@@ -11,7 +11,7 @@ const tripSchema = new Schema<ITrip>(
     destinationId: {
       type: Schema.Types.ObjectId,
       ref: 'Destination',
-      required: [true, 'Destination ID is required'],
+      required: false,
     },
     destination: {
       type: String,

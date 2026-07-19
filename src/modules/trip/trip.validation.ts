@@ -5,7 +5,7 @@ import { z } from 'zod';
  */
 
 export const createTripSchema = z.object({
-  destinationId: z.string().min(24, 'Invalid destination ID'),
+  destinationId: z.string().min(24, 'Invalid destination ID').optional(),
   destination: z.string().min(2),
   days: z.number().min(1).max(30),
   budget: z.number().positive(),

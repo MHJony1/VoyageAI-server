@@ -5,7 +5,7 @@
 export interface ITripResponse {
   _id: string;
   userId: string;
-  destinationId: string;
+  destinationId?: string;
   destination: string;
   days: number;
   budget: number;
