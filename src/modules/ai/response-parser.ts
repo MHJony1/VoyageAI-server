@@ -80,13 +80,8 @@ export const responseParser = {
    * Parse chat response
    */
   parseChat: (response: string): { message: string; suggestions?: string[] } => {
-    const lines = response.split('\n');
-    const message = lines[0] || response;
-    const suggestions = lines.slice(1).filter((l) => l.trim().length > 0);
-
     return {
-      message: message.trim(),
-      suggestions: suggestions.slice(0, 3),
+      message: response.trim(),
     };
   },
 

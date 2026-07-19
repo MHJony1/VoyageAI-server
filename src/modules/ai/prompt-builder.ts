@@ -36,10 +36,18 @@ RESPONSE FORMAT - Provide ONLY valid JSON (no markdown, no extra text):
     "other": number,
     "total": number
   },
-  "hotels": ["Hotel name with price range per night", ...],
-  "transportation": ["Method with estimated cost", ...],
-  "food": ["Restaurant/food type with estimated cost", ...],
-  "activities": ["Activity with estimated cost", ...],
+  "hotels": [
+    {"name": "Hotel name", "type": "Hotel category", "pricePerNight": "Price range per night", "rating": number}
+  ],
+  "transportation": [
+    {"type": "Method", "details": "How/where to use it", "estimatedCost": "Estimated cost"}
+  ],
+  "food": [
+    {"restaurant": "Restaurant/food name", "cuisine": "Cuisine type", "recommendation": "What to try with estimated cost"}
+  ],
+  "activities": [
+    {"activity": "Activity name", "description": "Short description", "bestTime": "Best time to do it"}
+  ],
   "tips": ["Travel tip 1", "Travel tip 2", ...],
   "packing": ["Item 1", "Item 2", ...]
 }
@@ -47,6 +55,7 @@ RESPONSE FORMAT - Provide ONLY valid JSON (no markdown, no extra text):
 IMPORTANT:
 - Return ONLY valid JSON, no markdown formatting
 - Days must have 1-3 activities
+- "rating" must be a number between 1 and 5
 - Budget numbers must be realistic for the destination
 - Include practical, actionable recommendations
 - All costs should be in the local currency mentioned
@@ -106,13 +115,18 @@ IMPORTANT:
    */
   buildChatPrompt: (message: string, context?: string): string => {
     return `
-You are a helpful travel assistant for VoyageAI. Answer travel-related questions concisely.
+You are a knowledgeable, friendly travel assistant for VoyageAI. Answer travel-related questions in a helpful, realistic, and practical way.
 
 ${context ? `Conversation history:\n${context}\n\n` : ''}
 
 User message: ${message}
 
-Provide helpful, practical travel advice. Keep responses under 150 words. Be conversational and friendly.
+GUIDELINES:
+- Give a medium-length, well-rounded answer (roughly 100-250 words).
+- Be specific and realistic: mention concrete places, approximate costs, timing, and practical tips where relevant.
+- Use short paragraphs or bullet points for readability when listing options.
+- Stay conversational and friendly, not robotic.
+- Do not use markdown headers or bold; plain text with simple bullets ("- ") is fine.
     `.trim();
   },
 };
