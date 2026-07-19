@@ -1,12 +1,45 @@
 import { Destination } from '../../models/destination.model';
 import { NotFoundError } from '../../errors/AppError';
-import type { CreateDestinationInput, ListDestinationsInput } from './destination.validation';
+import type {
+  CreateDestinationInput,
+  UpdateDestinationInput,
+  ListDestinationsInput,
+} from './destination.validation';
 import type { IDestinationResponse, IListDestinationsResult } from './destination.interface';
 
 /**
  * Destination Service
  * Contains business logic for destination operations
  */
+
+const toResponse = (doc: any): IDestinationResponse => ({
+  _id: doc._id.toString(),
+  title: doc.title,
+  country: doc.country,
+  category: doc.category,
+  description: doc.description,
+  location: doc.location,
+  thumbnail: doc.thumbnail,
+  gallery: doc.gallery,
+  rating: doc.rating,
+  estimatedBudget: doc.estimatedBudget,
+  bestSeason: doc.bestSeason,
+  featured: doc.featured,
+  duration: doc.duration,
+  bestTimeDescription: doc.bestTimeDescription,
+  highlights: doc.highlights,
+  included: doc.included,
+  excluded: doc.excluded,
+  travelTips: doc.travelTips,
+  weather: doc.weather,
+  currency: doc.currency,
+  language: doc.language,
+  latitude: doc.latitude,
+  longitude: doc.longitude,
+  mapUrl: doc.mapUrl,
+  createdAt: doc.createdAt,
+  updatedAt: doc.updatedAt,
+});
 
 export const destinationService = {
   /**
@@ -19,22 +52,7 @@ export const destinationService = {
       featured: data.featured || false,
     });
 
-    return {
-      _id: destination._id.toString(),
-      title: destination.title,
-      country: destination.country,
-      category: destination.category,
-      description: destination.description,
-      location: destination.location,
-      thumbnail: destination.thumbnail,
-      gallery: destination.gallery,
-      rating: destination.rating,
-      estimatedBudget: destination.estimatedBudget,
-      bestSeason: destination.bestSeason,
-      featured: destination.featured,
-      createdAt: destination.createdAt,
-      updatedAt: destination.updatedAt,
-    };
+    return toResponse(destination);
   },
 
   /**
@@ -79,22 +97,7 @@ export const destinationService = {
       Destination.countDocuments(query),
     ]);
 
-    const data: IDestinationResponse[] = dbData.map((doc: any) => ({
-      _id: doc._id.toString(),
-      title: doc.title,
-      country: doc.country,
-      category: doc.category,
-      description: doc.description,
-      location: doc.location,
-      thumbnail: doc.thumbnail,
-      gallery: doc.gallery,
-      rating: doc.rating,
-      estimatedBudget: doc.estimatedBudget,
-      bestSeason: doc.bestSeason,
-      featured: doc.featured,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    }));
+    const data: IDestinationResponse[] = dbData.map(toResponse);
 
     return {
       data,
@@ -112,22 +115,7 @@ export const destinationService = {
    */
   getFeatured: async (): Promise<IDestinationResponse[]> => {
     const destinations = await Destination.find({ featured: true }).limit(6).lean();
-    return destinations.map((doc: any) => ({
-      _id: doc._id.toString(),
-      title: doc.title,
-      country: doc.country,
-      category: doc.category,
-      description: doc.description,
-      location: doc.location,
-      thumbnail: doc.thumbnail,
-      gallery: doc.gallery,
-      rating: doc.rating,
-      estimatedBudget: doc.estimatedBudget,
-      bestSeason: doc.bestSeason,
-      featured: doc.featured,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    }));
+    return destinations.map(toResponse);
   },
 
   /**
@@ -138,22 +126,21 @@ export const destinationService = {
     if (!doc) {
       throw new NotFoundError('Destination not found');
     }
-    return {
-      _id: (doc as any)._id.toString(),
-      title: doc.title,
-      country: doc.country,
-      category: doc.category,
-      description: doc.description,
-      location: doc.location,
-      thumbnail: doc.thumbnail,
-      gallery: doc.gallery,
-      rating: doc.rating,
-      estimatedBudget: doc.estimatedBudget,
-      bestSeason: doc.bestSeason,
-      featured: doc.featured,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    };
+    return toResponse(doc);
+  },
+
+  /**
+   * Update destination
+   */
+  update: async (id: string, data: UpdateDestinationInput): Promise<IDestinationResponse> => {
+    const doc = await Destination.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    }).lean();
+    if (!doc) {
+      throw new NotFoundError('Destination not found');
+    }
+    return toResponse(doc);
   },
 
   /**

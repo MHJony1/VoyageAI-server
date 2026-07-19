@@ -54,6 +54,51 @@ const destinationSchema = new Schema<IDestination>(
       type: Boolean,
       default: false,
     },
+    duration: {
+      type: String,
+      trim: true,
+    },
+    bestTimeDescription: {
+      type: String,
+    },
+    highlights: [
+      {
+        type: String,
+      },
+    ],
+    included: [
+      {
+        type: String,
+      },
+    ],
+    excluded: [
+      {
+        type: String,
+      },
+    ],
+    travelTips: [
+      {
+        type: String,
+      },
+    ],
+    weather: {
+      type: String,
+    },
+    currency: {
+      type: String,
+    },
+    language: {
+      type: String,
+    },
+    latitude: {
+      type: Number,
+    },
+    longitude: {
+      type: Number,
+    },
+    mapUrl: {
+      type: String,
+    },
   },
   {
     timestamps: true,

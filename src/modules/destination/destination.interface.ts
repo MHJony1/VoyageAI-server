@@ -15,6 +15,18 @@ export interface IDestinationResponse {
   estimatedBudget: number;
   bestSeason: string;
   featured: boolean;
+  duration?: string;
+  bestTimeDescription?: string;
+  highlights?: string[];
+  included?: string[];
+  excluded?: string[];
+  travelTips?: string[];
+  weather?: string;
+  currency?: string;
+  language?: string;
+  latitude?: number;
+  longitude?: number;
+  mapUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }

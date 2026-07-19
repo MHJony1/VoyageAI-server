@@ -73,6 +73,15 @@ export const destinationController = {
   }),
 
   /**
+   * Update destination (protected)
+   */
+  update: catchAsync(async (req: IAuthRequest, res: Response) => {
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const destination = await destinationService.update(id, req.body);
+    sendSuccess(res, 200, 'Destination updated successfully', destination);
+  }),
+
+  /**
    * Delete destination (protected)
    */
   delete: catchAsync(async (req: IAuthRequest, res: Response) => {
